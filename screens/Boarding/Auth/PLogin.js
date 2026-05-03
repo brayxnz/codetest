@@ -15,38 +15,43 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import supabase from '../../../CBD';
+import {supabase} from '../../../CBD';
 
 export default function PLogin({ navigation }) {
   const [user, setUser] = useState('');
   const [pass, setPass] = useState('');
   const [loading, setLoading] = useState(false);
-
+  
   async function handleLogin() {
     if (!user || !pass) {
       Alert.alert('Error', 'Por favor completa todos los campos');
       return;
     }
-
+    
     setLoading(true);
     try {
       // Query directa a la tabla users
       // En handleLogin, después de validar el usuario:
       const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('username', user)
-        .eq('password', pass)
-        .single();
-
+      .from('users')
+      .select('*')
+      .eq('username', user)
+      .eq('password', pass)
+      .single();
+      
       if (error || !data) {
         Alert.alert('Error', 'Credenciales inválidas');
         setLoading(false);
         return;
       }
-
+      
       // Guarda los datos del usuario en AsyncStorage
-      await AsyncStorage.setItem('userData', JSON.stringify(data));
+      if (Platform.OS === 'web') {
+        localStorage.setItem('userData', JSON.stringify(data));
+      } else {
+        await AsyncStorage.setItem('userData', JSON.stringify(data));
+      }
+      
       console.log('Usuario autenticado:', data);
       navigation.replace('HomeTabs');
       // Login exitoso - guarda los datos del usuario
@@ -57,78 +62,78 @@ export default function PLogin({ navigation }) {
       setLoading(false);
     }
   }
-
+  
   return (
     <SafeAreaView style={styles.contMayor}>
-      <StatusBar style="light" /> 
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
-      >
-        <ScrollView 
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-        >
-          <View style={styles.contMenor}>
-            <Image
-              source={require('../../../assets/logo.png')}
-              style={{
-                width: 300,
-                height: 80,
-                alignSelf: 'center',
-                marginLeft: '5%',
-              }}
-            />
-            <Text style={styles.header}>Inicia sesión</Text>
-          </View>
-          
-          <View style={styles.div} />
-          
-          <View style={styles.contMenor}>
-            <TextInput
-              placeholderTextColor="lightgray"
-              placeholder="Usuario"
-              value={user}
-              onChangeText={setUser}
-              style={styles.input}
-              autoCapitalize="none"
-              editable={!loading}
-            />
-            <TextInput
-              placeholderTextColor="lightgray"
-              placeholder="Contraseña"
-              secureTextEntry
-              value={pass}
-              onChangeText={setPass}
-              style={styles.input}
-              autoCapitalize="none"
-              editable={!loading}
-            />
-            <TouchableOpacity 
-              style={styles.btnPpal} 
-              onPress={handleLogin} 
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <Text style={styles.btnTxt}>Entrar</Text>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.btnSec}
-              onPress={() => {
-                navigation.replace('PSignUp');
-              }}
-              disabled={loading}
-            >
-              <Text style={{fontWeight: 'bold',color: '#d44e00'}}>No tengo una cuenta</Text>
-            </TouchableOpacity>
-            <View style={styles.divVertical} />
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+    <StatusBar style="light" /> 
+    <KeyboardAvoidingView 
+    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    style={{ flex: 1 }}
+    keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+    >
+    <ScrollView 
+    contentContainerStyle={{ flexGrow: 1 }}
+    keyboardShouldPersistTaps="handled"
+    >
+    <View style={styles.contMenor}>
+    <Image
+    source={require('../../../assets/logo.png')}
+    style={{
+      width: 300,
+      height: 80,
+      alignSelf: 'center',
+      marginLeft: '5%',
+    }}
+    />
+    <Text style={styles.header}>Inicia sesión</Text>
+    </View>
+    
+    <View style={styles.div} />
+    
+    <View style={styles.contMenor}>
+    <TextInput
+    placeholderTextColor="lightgray"
+    placeholder="Usuario"
+    value={user}
+    onChangeText={setUser}
+    style={styles.input}
+    autoCapitalize="none"
+    editable={!loading}
+    />
+    <TextInput
+    placeholderTextColor="lightgray"
+    placeholder="Contraseña"
+    secureTextEntry
+    value={pass}
+    onChangeText={setPass}
+    style={styles.input}
+    autoCapitalize="none"
+    editable={!loading}
+    />
+    <TouchableOpacity 
+    style={styles.btnPpal} 
+    onPress={handleLogin} 
+    disabled={loading}
+    >
+    {loading ? (
+      <ActivityIndicator color="white" />
+    ) : (
+      <Text style={styles.btnTxt}>Entrar</Text>
+    )}
+    </TouchableOpacity>
+    <TouchableOpacity
+    style={styles.btnSec}
+    onPress={() => {
+      navigation.replace('PSignUp');
+    }}
+    disabled={loading}
+    >
+    <Text style={{fontWeight: 'bold',color: '#d44e00'}}>No tengo una cuenta</Text>
+    </TouchableOpacity>
+    <View style={styles.divVertical} />
+    </View>
+    </ScrollView>
+    </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
