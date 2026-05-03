@@ -6,7 +6,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build:pwa": "expo export -p web && npx workbox-cli generateSW workbox-config.js"
+    "build:pwa": "expo export -p web --clear && npx workbox-cli generateSW workbox-config.js"
 },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
