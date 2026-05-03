@@ -28,7 +28,7 @@ export default function PCarga({ navigation }) {
           // No hay sesión, ir a Intro/Login
           navigation.replace('Intro');
         }
-      }, 2000);
+      }, 2500);
       
     } catch (error) {
       console.log('Error al verificar login:', error);
