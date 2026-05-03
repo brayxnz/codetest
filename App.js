@@ -9,7 +9,7 @@ import HomeTabs from './screens/Boarding/Auth/Dashboard/HomeTabs'
 import TeamsTabs from './screens/Boarding/Auth/Dashboard/Teams/TeamsTabs'
 const Stack = createNativeStackNavigator();
 
-export function App1() {  return (
+export default function App() {  return ( 
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Splash" component={PCarga} />
@@ -23,7 +23,7 @@ export function App1() {  return (
     </NavigationContainer>
   );
 }
-export default function App() {  return (
+export function App1() {  return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Splash" component={PCarga} />

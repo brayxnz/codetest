@@ -15,6 +15,7 @@ dist/
 # Archivos del sistema
 .DS_Store
 Thumbs.db
+.notas
 
 # Expo
 .expo/
