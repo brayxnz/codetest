@@ -15,7 +15,6 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {supabase} from '../../../../../CBD';
-
 export default function AsignacionesP() {
   const [tareas, setTareas] = useState([]);
   const [filtro, setFiltro] = useState('To Do');

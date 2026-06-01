@@ -13,7 +13,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import supabase from '../../../../../../CBD';
+import {supabase} from '../../../../../../CBD';
 
 export default function CreateBitacora({ route, navigation }) {
   const { teamId, teamMembers } = route.params;

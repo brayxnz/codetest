@@ -318,7 +318,6 @@ export default function KanbanScreen({ route }) {
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: '#0a0a0a', paddingTop: 40 }}>
-      >
       <View style={styles.container}>
         {/* HEADER */}
         <View style={styles.headerContainer}>

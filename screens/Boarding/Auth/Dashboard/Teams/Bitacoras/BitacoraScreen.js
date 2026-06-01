@@ -10,7 +10,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import supabase from '../../../../../../CBD';
+import {supabase} from '../../../../../../CBD';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function BitacoraScreen({ navigation, route }) {

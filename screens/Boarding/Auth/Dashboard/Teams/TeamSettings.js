@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   ScrollView,
   SafeAreaView,
-  Platform,
+  Platform, Modal
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -24,6 +24,11 @@ export default function TeamSettings() {
   const [team, setTeam] = useState(null);
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState("cargando");
+  const [upgradeVisible, setUpgradeVisible] = useState(false);
+
+// 👇 derivado del equipo (vendrá de la BD luego)
+const isBoosted = !!team?.is_boosted;
+const boostedByName = team?.boosted_by_name || '';
 
   const showAlert = (title, message, buttons) => {
     if (Platform.OS === 'web') {
@@ -141,7 +146,8 @@ export default function TeamSettings() {
       </SafeAreaView>
     );
   }
-
+  console.log('TeamSettings team:', team);
+console.log('TeamSettings isBoosted:', isBoosted);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#141414' }}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -154,7 +160,33 @@ export default function TeamSettings() {
             <Text style={styles.optionText}>{team?.team_name}</Text>
           </View>
         </View>
-
+        {/* UPGRADE / ESTADO DE MEJORA */}
+{isBoosted ? (
+  <View style={styles.upgradeInfo}>
+    <Ionicons name="rocket-outline" size={20} color="#FACC15" />
+    <View style={{ marginLeft: 10 }}>
+      <Text style={styles.upgradeInfoTitle}>Servidor mejorado</Text>
+      <Text style={styles.upgradeInfoSubtitle}>
+        Mejorado por: <Text style={{ color: '#FACC15' }}>
+          {boostedByName || 'Miembro del equipo'}
+        </Text>
+      </Text>
+    </View>
+  </View>
+) : (
+  <TouchableOpacity
+    style={styles.upgradeBtn}
+    onPress={() => setUpgradeVisible(true)}
+  >
+    <Ionicons name="rocket-outline" size={20} color="#fff" />
+    <View style={{ marginLeft: 10 }}>
+      <Text style={styles.upgradeTitle}>Mejorar equipo</Text>
+      <Text style={styles.upgradeSubtitle}>
+        Cualquier miembro puede mejorar este servidor.
+      </Text>
+    </View>
+  </TouchableOpacity>
+)}
         {/* SOLO PO */}
         {role === "Product Owner" && (
           <TouchableOpacity style={styles.deleteBtn} onPress={deleteTeam}>
@@ -256,5 +288,26 @@ const styles = StyleSheet.create({
     color: '#666',
     fontSize: 12,
   },
+    upgradeInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    marginTop: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+    backgroundColor: '#065F46', // verde oscuro sutil
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#10B981',
+  },
+  upgradeInfoTitle: {
+    color: '#ECFDF5',
+    fontWeight: '700',
+    fontSize: 15,
+  },
+  upgradeInfoSubtitle: {
+    color: '#A7F3D0',
+    fontSize: 12,
+    marginTop: 2,
+  },
 });
-
