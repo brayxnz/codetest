@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import supabase from '../../../../../CBD';
+import {supabase} from '../../../../../CBD';
 
 export default function AsignacionesP() {
   const [tareas, setTareas] = useState([]);

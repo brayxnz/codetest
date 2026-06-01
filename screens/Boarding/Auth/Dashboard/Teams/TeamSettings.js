@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import supabase from '../../../../../CBD';
+import {supabase} from '../../../../../CBD';
 
 
 export default function TeamSettings() {

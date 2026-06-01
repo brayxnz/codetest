@@ -16,7 +16,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import supabase from '../../../../CBD';
+import {supabase} from '../../../../CBD';
 
 export default function TeamsHomeScreen({ navigation }) {
   const [teams, setTeams] = useState([]);
@@ -421,7 +421,7 @@ export default function TeamsHomeScreen({ navigation }) {
                   <Text style={styles.closeText}>Regresar</Text>
                 </TouchableOpacity>
               </>
-            )};
+            )}
 
             {/* FORMULARIO: UNIRSE */}
             {mode === 'join' && (

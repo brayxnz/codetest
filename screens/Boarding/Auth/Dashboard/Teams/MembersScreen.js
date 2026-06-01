@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import supabase from '../../../../../CBD';
+import {supabase} from '../../../../../CBD';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const navigation = useNavigation;

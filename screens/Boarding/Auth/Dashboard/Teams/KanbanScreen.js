@@ -16,7 +16,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import supabase from '../../../../../CBD';
+import {supabase} from '../../../../../CBD';
 import { BlurView } from 'expo-blur';
 
 export default function KanbanScreen({ route }) {
