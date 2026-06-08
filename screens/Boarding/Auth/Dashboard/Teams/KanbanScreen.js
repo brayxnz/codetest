@@ -20,7 +20,7 @@ import {supabase} from '../../../../../CBD';
 import { BlurView } from 'expo-blur';
 
 export default function KanbanScreen({ route }) {
-  const { teamId } = route.params;
+  const { teamId } = route.params;  
   const [tables, setTables] = useState([]);
   const [currentTable, setCurrentTable] = useState(null);
   const [tasks, setTasks] = useState([]);

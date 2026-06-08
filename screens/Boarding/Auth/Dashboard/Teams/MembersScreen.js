@@ -1000,6 +1000,7 @@ export default function MembersScreen({ route }) {
           backgroundColor: '#065F46',
           borderRadius: 12,
           borderWidth: 1,
+          width: '100%',
           borderColor: '#10B981',
         },
         upgradeInfoTitle: {

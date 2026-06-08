@@ -22,47 +22,66 @@ export default function PLogin({ navigation }) {
   const [pass, setPass] = useState('');
   const [loading, setLoading] = useState(false);
   
-  async function handleLogin() {
-    if (!user || !pass) {
-      Alert.alert('Error', 'Por favor completa todos los campos');
-      return;
-    }
-    
-    setLoading(true);
-    try {
-      // Query directa a la tabla users
-      // En handleLogin, después de validar el usuario:
-      const { data, error } = await supabase
+async function handleLogin() {
+  if (!user || !pass) {
+    Alert.alert('Error', 'Por favor completa todos los campos');
+    return;
+  }
+
+  setLoading(true);
+  try {
+    // 1) Traer usuario + insignia equipada en una sola query
+    const { data, error } = await supabase
       .from('users')
-      .select('*')
+      .select(`
+        *,
+        badges_shop!equipped_badge_id (
+          icon_family,
+          icon_name
+        )
+      `)
       .eq('username', user)
       .eq('password', pass)
       .single();
-      
-      if (error || !data) {
-        Alert.alert('Error', 'Credenciales inválidas');
-        setLoading(false);
-        return;
-      }
-      
-      // Guarda los datos del usuario en AsyncStorage
-      if (Platform.OS === 'web') {
-        localStorage.setItem('userData', JSON.stringify(data));
-      } else {
-        await AsyncStorage.setItem('userData', JSON.stringify(data));
-      }
-      
-      console.log('Usuario autenticado:', data);
-      navigation.replace('HomeTabs');
-      // Login exitoso - guarda los datos del usuario
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-      Alert.alert('Error', 'No se pudo conectar al servidor');
-    } finally {
+
+    if (error || !data) {
+      Alert.alert('Error', 'Credenciales inválidas');
       setLoading(false);
+      return;
     }
+
+    // 2) Construir el objeto a guardar en AsyncStorage
+    const badge = data.badges_shop || null;
+
+    const userDataToStore = {
+      ...data,
+      equipped_badge: badge
+        ? {
+            id: data.equipped_badge_id,
+            icon_family: badge.icon_family,
+            icon_name: badge.icon_name,
+            color: '#FACC15',
+          }
+        : null,
+    };
+
+    // 3) Guardar en AsyncStorage / localStorage
+    if (Platform.OS === 'web') {
+      localStorage.setItem('userData', JSON.stringify(userDataToStore));
+    } else {
+      await AsyncStorage.setItem('userData', JSON.stringify(userDataToStore));
+    }
+
+    console.log('Usuario autenticado:', userDataToStore);
+
+    navigation.replace('HomeTabs');
+  } catch (error) {
+    console.error('Error al iniciar sesión:', error);
+    Alert.alert('Error', 'No se pudo conectar al servidor');
+  } finally {
+    setLoading(false);
   }
-  
+}  
   return (
     <SafeAreaView style={styles.contMayor}>
     <StatusBar style="light" /> 

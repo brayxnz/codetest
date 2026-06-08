@@ -7,6 +7,7 @@ import PLogin from './screens/Boarding/Auth/PLogin'
 import PSignUp from './screens/Boarding/Auth/PSignUp'
 import HomeTabs from './screens/Boarding/Auth/Dashboard/HomeTabs'
 import TeamsTabs from './screens/Boarding/Auth/Dashboard/Teams/TeamsTabs'
+import BadgesShop from './screens/Boarding/Auth/Dashboard/BadgesShop';
 const Stack = createNativeStackNavigator();
 
 export default function App() {  return ( 
@@ -19,6 +20,7 @@ export default function App() {  return (
         <Stack.Screen name="PSignUp" component={PSignUp} />
         <Stack.Screen name="HomeTabs" component={HomeTabs} />
         <Stack.Screen name="TeamsTabs" component={TeamsTabs} />
+        <Stack.Screen name="BadgesShop" component={BadgesShop}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

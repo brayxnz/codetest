@@ -23,115 +23,115 @@ export default function SBLoginConn({ navigation }) {
   const [psw, setPsw] = useState('');
   const [loading, setLoading] = useState(false);
   
-  async function handleSignUp() {
-    // Validación de campos vacíos
-    if (!nombre || !username || !psw) {
-      if(Platform.OS == 'web') {
-        alert('Por favor completa todos los campos');
-        return;
-      }
-      Alert.alert('Faltan datos', 'Por favor completa todos los campos');
+async function handleSignUp() {
+  if (!nombre || !username || !psw) {
+    if (Platform.OS === 'web') {
+      alert('Por favor completa todos los campos');
       return;
     }
-    
-    // Validación de longitud de contraseña
-    if (psw.length < 6) {
-      if(Platform.OS == 'web') {
-        alert('La contraseña debe tener al menos 6 caracteres');
-        return;
-      }
-      Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres');
+    Alert.alert('Faltan datos', 'Por favor completa todos los campos');
+    return;
+  }
+
+  if (psw.length < 6) {
+    if (Platform.OS === 'web') {
+      alert('La contraseña debe tener al menos 6 caracteres');
       return;
     }
-    
-    // Validación de username (sin espacios)
-    if (username.includes(' ')) {
-      if(Platform.OS == 'web') {
-        alert('El usuario no puede contener espacios');
-        return;
-      }
-      
-      Alert.alert('Error', 'El usuario no puede contener espacios');
+    Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres');
+    return;
+  }
+
+  if (username.includes(' ')) {
+    if (Platform.OS === 'web') {
+      alert('El usuario no puede contener espacios');
       return;
     }
-    
-    setLoading(true);
-    
-    try {
-      // 1. Verificar si el username ya existe
-      const { data: existingUser, error: checkError } = await supabase
+    Alert.alert('Error', 'El usuario no puede contener espacios');
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    // 1) Verificar si el username ya existe
+    const { data: existingUser, error: checkError } = await supabase
       .from('users')
       .select('username')
       .eq('username', username)
       .single();
-      
-      if (existingUser) {
-        Alert.alert('Error', 'Este nombre de usuario ya está en uso');
-        setLoading(false);
-        return;
-      }
-      
-      // Si el error es diferente de "no rows returned", es un error real
-      if (checkError && checkError.code !== 'PGRST116') {
-        console.error('Error al verificar usuario:', checkError);
-        Alert.alert('Error', 'No se pudo verificar la disponibilidad del usuario');
-        setLoading(false);
-        return;
-      }
-      
-      // 2. Crear el nuevo usuario
-      const { data: newUser, error: insertError } = await supabase
+
+    if (existingUser) {
+      Alert.alert('Error', 'Este nombre de usuario ya está en uso');
+      setLoading(false);
+      return;
+    }
+
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error('Error al verificar usuario:', checkError);
+      Alert.alert(
+        'Error',
+        'No se pudo verificar la disponibilidad del usuario'
+      );
+      setLoading(false);
+      return;
+    }
+
+    // 2) Crear el nuevo usuario
+    const { data: newUser, error: insertError } = await supabase
       .from('users')
       .insert([
         {
           name: nombre,
           username: username,
-          password: psw
-        }
+          password: psw,
+        },
       ])
       .select()
       .single();
-      
-      if (insertError) {
-        console.error('Error al crear usuario:', insertError);
-        Alert.alert('Error', 'No se pudo crear la cuenta. Intenta nuevamente.');
-        setLoading(false);
-        return;
-      }
-      
-      // 3. Guardar los datos del usuario en AsyncStorage
-      // Guardar datos compatible con web y móvil
-      if (Platform.OS === 'web') {
-        localStorage.setItem('userData', JSON.stringify(newUser));
-      } else {
-        await AsyncStorage.setItem('userData', JSON.stringify(newUser));
-      }
-      console.log('Usuario creado exitosamente:', newUser);
-      
-      // 4. Mostrar mensaje de éxito y navegar
-      if(Platform.OS == 'web'){
-        navigation.replace('HomeTabs');
-        return;
-      }
-      Alert.alert(
-        'Cuenta creada', 
-        `¡Bienvenido a CodeNest, ${nombre}!`,
-        [
-          {
-            text: 'Continuar',
-            onPress: () => navigation.replace('HomeTabs')
-          }
-        ]
-      );
-      
-    } catch (error) {
-      console.error('Error en el registro:', error);
-      Alert.alert('Error', 'Ocurrió un error inesperado. Por favor intenta nuevamente.');
-    } finally {
+
+    if (insertError) {
+      console.error('Error al crear usuario:', insertError);
+      Alert.alert('Error', 'No se pudo crear la cuenta. Intenta nuevamente.');
       setLoading(false);
+      return;
     }
+
+    // 3) Estructura que guardamos en AsyncStorage (equipped_badge null al inicio)
+    const userDataToStore = {
+      ...newUser,
+      equipped_badge: null,
+    };
+
+    if (Platform.OS === 'web') {
+      localStorage.setItem('userData', JSON.stringify(userDataToStore));
+    } else {
+      await AsyncStorage.setItem('userData', JSON.stringify(userDataToStore));
+    }
+
+    console.log('Usuario creado exitosamente:', userDataToStore);
+
+    // 4) Navegar
+    if (Platform.OS === 'web') {
+      navigation.replace('HomeTabs');
+      return;
+    }
+    Alert.alert('Cuenta creada', `¡Bienvenido a CodeNest, ${nombre}!`, [
+      {
+        text: 'Continuar',
+        onPress: () => navigation.replace('HomeTabs'),
+      },
+    ]);
+  } catch (error) {
+    console.error('Error en el registro:', error);
+    Alert.alert(
+      'Error',
+      'Ocurrió un error inesperado. Por favor intenta nuevamente.'
+    );
+  } finally {
+    setLoading(false);
   }
-  return (
+}  return (
     <SafeAreaView style={styles.contMayor}>
     <StatusBar style="light" /> 
     <KeyboardAvoidingView 
